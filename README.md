@@ -12,15 +12,9 @@ This started as a personal tool for tracking daily nutrition, workouts, water in
 
 ---
 
-## Run Locally
+## Run website
 
-```bash
-node server.js
-```
-
-Then open **http://localhost:3000**.
-
-No `npm install` needed — `server.js` is a zero-dependency static file server using only Node.js built-ins.
+Live demo: https://fitcore-swart.vercel.app/
 
 ---
 
