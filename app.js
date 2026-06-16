@@ -19,25 +19,27 @@ const C = {
 const TODAY = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
 const FOODS = [
-  { name: 'Chicken Breast (4oz)',      cals: 185, protein: 35, carbs:  0, fat:  4 },
-  { name: 'Brown Rice (1 cup)',         cals: 216, protein:  5, carbs: 45, fat:  2 },
-  { name: 'Eggs (2 large)',             cals: 143, protein: 13, carbs:  1, fat: 10 },
-  { name: 'Greek Yogurt (1 cup)',       cals: 130, protein: 17, carbs:  9, fat:  4 },
-  { name: 'Banana',                     cals: 105, protein:  1, carbs: 27, fat:  0 },
-  { name: 'Oatmeal (1 cup)',            cals: 166, protein:  6, carbs: 28, fat:  4 },
-  { name: 'Salmon (4oz)',               cals: 233, protein: 25, carbs:  0, fat: 14 },
-  { name: 'Broccoli (1 cup)',           cals:  55, protein:  4, carbs: 11, fat:  1 },
-  { name: 'Sweet Potato (medium)',      cals: 103, protein:  2, carbs: 24, fat:  0 },
-  { name: 'Protein Shake',             cals: 150, protein: 25, carbs:  5, fat:  3 },
-  { name: 'Almonds (1oz)',             cals: 164, protein:  6, carbs:  6, fat: 14 },
-  { name: 'Avocado (half)',            cals: 120, protein:  2, carbs:  6, fat: 11 },
-  { name: 'Cottage Cheese (1/2 cup)', cals: 110, protein: 13, carbs:  5, fat:  5 },
-  { name: 'Tuna (can)',                cals: 130, protein: 28, carbs:  0, fat:  2 },
-  { name: 'Apple',                     cals:  95, protein:  0, carbs: 25, fat:  0 },
-  { name: 'White Rice (1 cup)',        cals: 206, protein:  4, carbs: 45, fat:  0 },
-  { name: 'Steak (4oz)',               cals: 250, protein: 26, carbs:  0, fat: 17 },
-  { name: 'Milk (1 cup)',              cals: 122, protein:  8, carbs: 12, fat:  5 },
+  { name: 'Chicken Breast (4oz)',      cals: 185, protein: 35, carbs:  0, fat:  4, meal: 'Lunch' },
+  { name: 'Brown Rice (1 cup)',         cals: 216, protein:  5, carbs: 45, fat:  2, meal: 'Lunch' },
+  { name: 'Eggs (2 large)',             cals: 143, protein: 13, carbs:  1, fat: 10, meal: 'Breakfast' },
+  { name: 'Greek Yogurt (1 cup)',       cals: 130, protein: 17, carbs:  9, fat:  4, meal: 'Breakfast' },
+  { name: 'Banana',                     cals: 105, protein:  1, carbs: 27, fat:  0, meal: 'Snacks' },
+  { name: 'Oatmeal (1 cup)',            cals: 166, protein:  6, carbs: 28, fat:  4, meal: 'Breakfast' },
+  { name: 'Salmon (4oz)',               cals: 233, protein: 25, carbs:  0, fat: 14, meal: 'Dinner' },
+  { name: 'Broccoli (1 cup)',           cals:  55, protein:  4, carbs: 11, fat:  1, meal: 'Dinner' },
+  { name: 'Sweet Potato (medium)',      cals: 103, protein:  2, carbs: 24, fat:  0, meal: 'Dinner' },
+  { name: 'Protein Shake',             cals: 150, protein: 25, carbs:  5, fat:  3, meal: 'Snacks' },
+  { name: 'Almonds (1oz)',             cals: 164, protein:  6, carbs:  6, fat: 14, meal: 'Snacks' },
+  { name: 'Avocado (half)',            cals: 120, protein:  2, carbs:  6, fat: 11, meal: 'Lunch' },
+  { name: 'Cottage Cheese (1/2 cup)', cals: 110, protein: 13, carbs:  5, fat:  5, meal: 'Breakfast' },
+  { name: 'Tuna (can)',                cals: 130, protein: 28, carbs:  0, fat:  2, meal: 'Lunch' },
+  { name: 'Apple',                     cals:  95, protein:  0, carbs: 25, fat:  0, meal: 'Snacks' },
+  { name: 'White Rice (1 cup)',        cals: 206, protein:  4, carbs: 45, fat:  0, meal: 'Dinner' },
+  { name: 'Steak (4oz)',               cals: 250, protein: 26, carbs:  0, fat: 17, meal: 'Dinner' },
+  { name: 'Milk (1 cup)',              cals: 122, protein:  8, carbs: 12, fat:  5, meal: 'Breakfast' },
 ];
+
+const MEALS = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
 
 const WORKOUTS = [
   { name: 'Push Day',  icon: '💪', color: '#FF6B1A', duration: '45 min', cals: 280, sets: 'Bench 4x8 | OHP 3x10 | Tricep 3x12' },
@@ -328,6 +330,9 @@ function renderFoodListItems(search) {
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${C.orange}">${f.cals}</span>
+        <select class="input meal-select" id="meal-select-${FOODS.indexOf(f)}" style="padding:4px 6px;font-size:11px;width:auto">
+          ${MEALS.map(m => `<option value="${m}" ${m === f.meal ? 'selected' : ''}>${m}</option>`).join('')}
+        </select>
         <button class="btn btn-primary btn-sm" onclick="addFoodByIndex(${FOODS.indexOf(f)})">+</button>
       </div>
     </div>`).join('');
@@ -380,6 +385,12 @@ function renderNutrition(c) {
             <div class="form-group"><label class="form-label">Carbs (g)</label><input class="input" id="cf-carbs" type="number" placeholder="0"></div>
             <div class="form-group"><label class="form-label">Fat (g)</label><input class="input" id="cf-fat" type="number" placeholder="0"></div>
           </div>
+          <div class="form-group">
+            <label class="form-label">Meal</label>
+            <select class="input" id="cf-meal">
+              ${MEALS.map(m => `<option value="${m}">${m}</option>`).join('')}
+            </select>
+          </div>
           <button class="btn btn-primary" style="width:100%" onclick="addCustomFood()">Add Custom Food</button>
         `}
       </div>
@@ -392,17 +403,31 @@ function renderNutrition(c) {
         ${S.foods.length === 0
           ? `<div style="color:${C.muted};font-size:13px;text-align:center;padding:40px 0">No foods logged yet.<br><span style="color:${C.accent}">Add food from the library →</span></div>`
           : `<div style="max-height:420px;overflow-y:auto">
-              ${S.foods.map((f, i) => `
-                <div class="log-row">
-                  <div>
-                    <div class="log-name">${f.name}</div>
-                    <div class="log-macros">P: ${f.protein}g · C: ${f.carbs}g · F: ${f.fat}g</div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:8px">
-                    <div class="log-cals">${f.cals}</div>
-                    <button style="background:transparent;color:${C.muted};border:none;cursor:pointer;font-size:16px" onclick="removeFood(${i})">×</button>
-                  </div>
-                </div>`).join('')}
+              ${MEALS.map(meal => {
+                const items = S.foods
+                  .map((f, i) => ({ ...f, _idx: i }))
+                  .filter(f => (f.meal || 'Snacks') === meal);
+                if (items.length === 0) return '';
+                const mealCals = items.reduce((s, f) => s + f.cals, 0);
+                return `
+                  <div class="meal-group">
+                    <div class="meal-group-header">
+                      <span>${meal}</span>
+                      <span class="meal-group-cals">${mealCals} kcal</span>
+                    </div>
+                    ${items.map(f => `
+                      <div class="log-row">
+                        <div>
+                          <div class="log-name">${f.name}</div>
+                          <div class="log-macros">P: ${f.protein}g · C: ${f.carbs}g · F: ${f.fat}g</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                          <div class="log-cals">${f.cals}</div>
+                          <button style="background:transparent;color:${C.muted};border:none;cursor:pointer;font-size:16px" onclick="removeFood(${f._idx})">×</button>
+                        </div>
+                      </div>`).join('')}
+                  </div>`;
+              }).join('')}
              </div>`}
         <div class="divider"></div>
         <div style="display:flex;justify-content:space-between;align-items:center">
@@ -823,7 +848,9 @@ function setWater(n) {
 }
 
 function addFoodByIndex(idx) {
-  S.foods.push(FOODS[idx]);
+  const select = document.getElementById('meal-select-' + idx);
+  const meal = select ? select.value : FOODS[idx].meal;
+  S.foods.push({ ...FOODS[idx], meal });
   persist('fc_foods', S.foods);
   notify('Added ' + FOODS[idx].name);
   // Only re-render the log panel, keep search input intact
@@ -837,8 +864,9 @@ function addCustomFood() {
   const protein = parseInt(document.getElementById('cf-protein')?.value || 0);
   const carbs   = parseInt(document.getElementById('cf-carbs')?.value   || 0);
   const fat     = parseInt(document.getElementById('cf-fat')?.value     || 0);
+  const meal    = document.getElementById('cf-meal')?.value || 'Snacks';
   if (!name) return;
-  S.foods.push({ name, cals, protein, carbs, fat });
+  S.foods.push({ name, cals, protein, carbs, fat, meal });
   persist('fc_foods', S.foods);
   notify('Added ' + name);
   render();
